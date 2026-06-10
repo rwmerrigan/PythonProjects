@@ -1,5 +1,5 @@
 
-# Step 1 Store customer orders
+# region Step 1: Store Customer Orders
 # - Create a list of customer names
 customer_names = ["Cassandra", "Liliana", "Jerod", "Rick", "Siobhan", "Thomas"]
 
@@ -30,26 +30,22 @@ for order in customer_orders:
         # populated with customer order data in a list of tuples
         customer_order_dictionary[customer] = []
     customer_order_dictionary[customer].append((product, price, category))
-    
+print(customer_order_dictionary)
 for customer_name, customer_order_tuple in customer_order_dictionary.items():
     print(f"{customer_name}: {customer_order_tuple}")
+#endregion
 
-# Step 2 Classify products by category
+# region Step 2: Classify Products by Category
 # - Use a dictionary to map each product to its respective category
 product_categories = {}
 
 for _, product, _, category in customer_orders:
     product_categories[product] = category
 # print(product_categories)
-# {'Jeans': 'Clothing', 'Osmose': 'Synthesizer', 'Hat': 'Clothing', 'Glasses': 'Clothing', 
-# 'Apples': 'Grocery', 'Laptop': 'Electronics', 'Candle': 'Home Essentials', 'Gum': 'Grocery', 
-# 'Stapler': 'Office Supplies', 'The Shining': 'Books'}
 
 # - Create a set of unique product categories
 unique_categories = set(product_categories.values())
 # print("Unique Product Categories:", unique_categories)
-# Unique Product Categories: {'Office Supplies', 'Clothing', 'Home Essentials', 'Synthesizer', 
-# 'Grocery', 'Books', 'Electronics'}
 
 # - Display all available product categories
 categorized_products = {}
@@ -61,10 +57,62 @@ for product, category in product_categories.items():
 print("\nProducts Classified by Category:")
 for category, product in categorized_products.items():
     print(f"{category}: {product}")
+#endregion
 
-# Step 3 Analyze customer orders
+# region Step 3 Analyze Customer Orders
 # - Use a loop to calculate the total amount each customer spends
+customer_spending = {}
+for customer, orders in customer_order_dictionary.items():
+    # equivalent statement to [price for _, price, _ in orders], a "comprehension"
+    # prices = []
+    # for _, price, _ in orders:
+    #      prices.append(price)
+    total_spent = sum([price for _, price, _ in orders])
+    customer_spending[customer] = total_spent
+print(customer_spending)
+
 # - If the total purchase value is above $100, classify the customer as a high-value buyer
 # - If it is between $50 and $100, classify the customer as a moderate buyer
 # - If it is below $50, classify them as a low-value buyer
+customer_buyer_classification = {}
+for customer, total_spent in customer_spending.items():
+    if total_spent > 100:
+        customer_buyer_classification[customer] = "High-Value Buyer"
+    elif 50 <= total_spent <= 100:
+        customer_buyer_classification[customer] = "Moderate Buyer"
+    else:
+        customer_buyer_classification[customer] = "Low-Value Buyer"
 
+print("\nCustomer Classification Based on Spending:")
+for customer, classification in customer_buyer_classification.items():
+    print(f"{customer}: {classification} (Spent: ${customer_spending[customer]})")
+#endregion
+
+# region Step 4 Generate business insights
+# - Calculate the total revenue per product category and store it in a dictionary
+category_sales = {}
+for _, product, price, category in customer_orders:
+    if category not in category_sales:
+        category_sales[category] = 0
+    category_sales[category] += price
+
+print("\nTotal Sales by Product Category:")
+for category, total_sales in category_sales.items():
+    print(f"{category}: ${total_sales}")
+# - Extract unique products from all orders using a set comprehension
+# this is shorthand for:
+# unique_products = set()
+# for _, product, _, _ in customer_orders:
+#     unique_products.add(product)
+unique_products = {product for _, product, _, _ in customer_orders}
+print("\nUnique Products Sold:", unique_products)
+# - Use a list comprehension to find all customers who purchased electronics
+electronics_customers = [customer for customer, orders in customer_order_dictionary.items()
+                         if any(category == "Electronics" for _, _, category in orders)]
+print("\nCustomers Who Purchased Electronics:", electronics_customers)
+# - Identify the top three highest-spending customers using sorting
+top_spenders = sorted(customer_spending.items(), key=lambda x:x[1], reverse=True)[:3]
+print("\nTop 3 Highest Spending Customers:")
+for customer, total_spent in top_spenders:
+    print(f"{customer}: ${total_spent}")
+#endregion
