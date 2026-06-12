@@ -1,24 +1,34 @@
+from collections import Counter
 
-# region Step 1: Store Customer Orders
+# region -------------- Step 1: Store Customer Orders --------------
 # - Create a list of customer names
-customer_names = ["Cassandra", "Liliana", "Jerod", "Rick", "Siobhan", "Thomas"]
+customer_names = ["Cassandra", "Liliana", "Jerod", "Rick", "Siobhan", "Thomas", "Jason"]
 
 # - Store each customer's order details (customer name, product, price, category) as tuples inside a list
 customer_orders = [
     ("Liliana", "Jeans", 50, "Clothing"),
     ("Rick", "Osmose", 1600, "Synthesizer"),
+    ("Rick", "Glasses", 1600, "Clothing"),
     ("Thomas", "Hat", 20, "Clothing"),
     ("Liliana", "Glasses", 20, "Clothing"),
+    ("Liliana", "Laptop", 2000, "Electronics"),
     ("Jerod", "Apples", 10, "Grocery"),
+    ("Jerod", "Jeans", 30, "Clothing"),
     ("Siobhan", "Laptop", 1500, "Electronics"),
     ("Cassandra", "Candle", 10, "Home Essentials"),
     ("Rick", "Gum", 5, "Grocery"),
     ("Jerod", "Stapler", 15, "Office Supplies"),
-    ("Siobhan", "The Shining", 25, "Books")
+    ("Jason", "Chips", 5, "Groceries"),
+    ("Jason", "Pickleball Paddle", 200, "Sports"),
+    ("Siobhan", "The Shining", 25, "Books"),
+    ("Siobhan", "Jeans", 100, "Clothing")
 ]
 
 # - Use a dictionary where keys are customer names and values are lists of ordered products
 customer_order_dictionary = {}
+customer_ordered_categories = {}
+customer_ordered_products = {}
+products_ordered_list = []
 
 for order in customer_orders:
     # This is a python way to equate variables in a list I believe, basically 
@@ -29,13 +39,17 @@ for order in customer_orders:
         # create an empty list with customer name as key ready to be 
         # populated with customer order data in a list of tuples
         customer_order_dictionary[customer] = []
+        customer_ordered_categories[customer] = []
+        customer_ordered_products[customer] = []
     customer_order_dictionary[customer].append((product, price, category))
-print(customer_order_dictionary)
-for customer_name, customer_order_tuple in customer_order_dictionary.items():
-    print(f"{customer_name}: {customer_order_tuple}")
+    customer_ordered_categories[customer].append(category)
+    customer_ordered_products[customer].append(product)
+    products_ordered_list.append(product)
+# for customer_name, customer_order_tuple in customer_order_dictionary.items():
+#     print(f"{customer_name}: {customer_order_tuple}")
 #endregion
 
-# region Step 2: Classify Products by Category
+# region -------------- Step 2: Classify Products by Category --------------
 # - Use a dictionary to map each product to its respective category
 product_categories = {}
 
@@ -54,12 +68,12 @@ for product, category in product_categories.items():
     if category not in categorized_products:
         categorized_products[category] = []
     categorized_products[category].append(product)
-print("\nProducts Classified by Category:")
-for category, product in categorized_products.items():
-    print(f"{category}: {product}")
+# print("\nProducts Classified by Category:")
+# for category, product in categorized_products.items():
+#     print(f"{category}: {product}")
 #endregion
 
-# region Step 3 Analyze Customer Orders
+# region -------------- Step 3 Analyze Customer Orders --------------
 # - Use a loop to calculate the total amount each customer spends
 customer_spending = {}
 for customer, orders in customer_order_dictionary.items():
@@ -69,7 +83,7 @@ for customer, orders in customer_order_dictionary.items():
     #      prices.append(price)
     total_spent = sum([price for _, price, _ in orders])
     customer_spending[customer] = total_spent
-print(customer_spending)
+#print(customer_spending)
 
 # - If the total purchase value is above $100, classify the customer as a high-value buyer
 # - If it is between $50 and $100, classify the customer as a moderate buyer
@@ -83,12 +97,12 @@ for customer, total_spent in customer_spending.items():
     else:
         customer_buyer_classification[customer] = "Low-Value Buyer"
 
-print("\nCustomer Classification Based on Spending:")
-for customer, classification in customer_buyer_classification.items():
-    print(f"{customer}: {classification} (Spent: ${customer_spending[customer]})")
+# print("\nCustomer Classification Based on Spending:")
+# for customer, classification in customer_buyer_classification.items():
+#     print(f"{customer}: {classification} (Spent: ${customer_spending[customer]})")
 #endregion
 
-# region Step 4 Generate business insights
+# region -------------- Step 4 Generate business insights --------------
 # - Calculate the total revenue per product category and store it in a dictionary
 category_sales = {}
 for _, product, price, category in customer_orders:
@@ -96,23 +110,69 @@ for _, product, price, category in customer_orders:
         category_sales[category] = 0
     category_sales[category] += price
 
-print("\nTotal Sales by Product Category:")
-for category, total_sales in category_sales.items():
-    print(f"{category}: ${total_sales}")
+# print("\nTotal Sales by Product Category:")
+# for category, total_sales in category_sales.items():
+#     print(f"{category}: ${total_sales}")
 # - Extract unique products from all orders using a set comprehension
 # this is shorthand for:
 # unique_products = set()
 # for _, product, _, _ in customer_orders:
 #     unique_products.add(product)
 unique_products = {product for _, product, _, _ in customer_orders}
-print("\nUnique Products Sold:", unique_products)
+#print("\nUnique Products Sold:", unique_products)
 # - Use a list comprehension to find all customers who purchased electronics
 electronics_customers = [customer for customer, orders in customer_order_dictionary.items()
                          if any(category == "Electronics" for _, _, category in orders)]
-print("\nCustomers Who Purchased Electronics:", electronics_customers)
+clothing_customers = [customer for customer, orders in customer_order_dictionary.items()
+                         if any(category == "Clothing" for _, _, category in orders)]
+
+shared_buyers = []
+for x in electronics_customers:
+    if x in clothing_customers:
+        shared_buyers.append(x)
+
+#print("\nCustomers Who Purchased Electronics:", electronics_customers)
 # - Identify the top three highest-spending customers using sorting
 top_spenders = sorted(customer_spending.items(), key=lambda x:x[1], reverse=True)[:3]
-print("\nTop 3 Highest Spending Customers:")
-for customer, total_spent in top_spenders:
-    print(f"{customer}: ${total_spent}")
+# print("\nTop 3 Highest Spending Customers:")
+# for customer, total_spent in top_spenders:
+#     print(f"{customer}: ${total_spent}")
+#endregion
+
+top_three_products = Counter(products_ordered_list).most_common(3)
+
+
+
+#region -------------- Step 5 Organize and Display Data --------------
+print("\n---- Customer Classification Based on Spending:")
+for customer, classification in customer_buyer_classification.items():
+    print(f"{customer}: {classification} (Spent: ${customer_spending[customer]})")
+
+print("\n---- Customers Who Purchased from Multiple Categories:")
+customers_multiple_categories = []
+for customer, category_values in customer_ordered_categories.items():
+    category_values_set = list(set(category_values))
+    if len(category_values_set) > 1:
+        print(f"{customer}: {category_values}")
+
+print("\n---- Customers who Bought Clothing and Electronics")
+for i in range(len(shared_buyers)):
+    print(shared_buyers[i])
+
+print("\n---- High-Value Buyers:")
+for customer, classification in customer_buyer_classification.items():
+    if classification == "High-Value Buyer":
+        print(f"{customer}: {classification} (Spent: ${customer_spending[customer]})")
+
+print("\n---- Top Three Products Purchased")
+for i in range(len(top_three_products)):
+    print(top_three_products[i][0])
+
+print("\n---- Products Classified by Category:")
+for category, product in categorized_products.items():
+    print(f"{category}: {product}")
+
+print("\n---- Total Sales by Product Category:")
+for category, total_sales in category_sales.items():
+    print(f"{category}: ${total_sales}")
 #endregion
