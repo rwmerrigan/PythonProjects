@@ -1,0 +1,6 @@
+Client: Hello, I need to check the status of my shipment.
+Bot: Sure, can I have your tracking number?
+Client: It's GLOBO123456.
+Bot: Thank you. Your package is currently in transit and should arrive by Thursday.
+Client: Great, thanks!
+Bot: You're welcome. Have a nice day!
