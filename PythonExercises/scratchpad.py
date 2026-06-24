@@ -1,4 +1,15 @@
 class Employee:
+    # class methods and attributes define class specific methods and attributes,
+    # not instance level, meaning these attributes and methods will be shared by 
+    # all instances of this class
+    minimum_wage = 1000
+
+    @ classmethod
+    def change_minimum_wage(cls, new_wage):
+        if new_wage > 3000:
+            raise ValueError("Company is Bankrupt.")
+        cls.minimum_wage = new_wage
+
     def __init__(self, name, age, position, salary):
         # Instance Attributes
         self.name = name
@@ -29,6 +40,10 @@ class Employee:
 
     @property
     def annual_salary(self):
+        # caching means that even if this logic were to be computationally 
+        # intensive we only run it when it needs to be run, when we cache
+        # data its stored in the class and not recomputed everytime we access it,
+        # only the first time 
         if self._annual_salary is None: # example of caching
             self._annual_salary = self.salary * 12
         return self._annual_salary
