@@ -11,7 +11,6 @@ def create_rectangle_variables():
     return rectangle_values
 
 
-
 def calculate_rectangle_area(length, width):
     # TODO: Task 2.2 - Calculate rectangle area
     # Hint: Use Python's multiplication operator and return the computed value
@@ -22,4 +21,8 @@ def calculate_rectangle_area(length, width):
 def calculate_decades_and_years(age):
     # TODO: Task 4.1 - Compute decades and remaining years
     # Hint: Floor division finds whole decades and modulo finds leftover years
-    return (0, age)
+    if age < 0:
+        raise ValueError
+    full_decades = age // 10
+    decades_remainder = age % 10
+    return (full_decades, decades_remainder)
