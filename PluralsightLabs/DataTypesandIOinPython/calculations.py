@@ -26,3 +26,4 @@ def calculate_decades_and_years(age):
     full_decades = age // 10
     decades_remainder = age % 10
     return (full_decades, decades_remainder)
+
