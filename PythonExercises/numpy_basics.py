@@ -86,5 +86,3 @@ print(f"Averages per student (A, B, C): \n{student_averages}")
 #          meaning 85 > 92?, 92 > 70? etc. 
 highest_score_per_subject = np.max(scores, axis=0)
 print("Highest score per subject (Math, Science, History):", highest_score_per_subject)
-
-# something enw
